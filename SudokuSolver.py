@@ -56,12 +56,14 @@ class SudokuSolver:
     def cross_product(self, A, B):
         return [a+b for a in A for b in B]
 
+    # checking to see if board is solved (all cells have a single value)
     def solved(self):
         for cell in self.cells:
             if len(self.cell_values[cell]) > 1:
                 return False 
         return True
     
+    # checking to see if board is unsolvable (any cell has 0 possible remaining values)
     def is_invalid(self):
         if len([cell for cell, values in self.cell_values if len(values) == 0]):
             return True
