@@ -175,5 +175,8 @@ class Main:
     solver.printBoard()
     solver.removeInvalid()
     solver.solve()
+    easy_path = 'EasyDifficultyTestSudokus/easy-1.txt'
+    solver = SudokuSolver(os.path.join(path, rel_path))
+    solver.solve()
     #solver.checkForSingles(solver.row_units)
     #solver.checkForSingles(solver.col_units)
