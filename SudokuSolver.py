@@ -9,12 +9,12 @@ class SudokuSolver:
 
     def __init__(self, file):
         self.cells = [row+col for row in SudokuSolver.rows for col in SudokuSolver.cols]
-        self.values = []
+        self.start_values = []
         with open(file) as f:
             csv_reader = csv.reader(f)
             for line in csv_reader:
                 for item in line:
-                    self.values.append(item)
+                    self.start_values.append(item)
             
 
         
