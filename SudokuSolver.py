@@ -138,8 +138,9 @@ class SudokuSolver:
         
         # constraint propagation goes here
         while not stuck:
-            tests = [True] # initialize to True for each test run
+            tests = [True, True] # initialize to True for each test run
             tests[0] = self.checkForSingles(self.unit_list)
+            tests[1] = self.trimPotentialValues(self.unit_list)
             
             # nothing changed on the iteration, we're stuck
             if True not in tests:
