@@ -1,4 +1,5 @@
 from SudokuCell import SudokuCell
+import csv
 
 class SudokuSolver:
     digits = "123456789" # used for possible values of cells and column numbers
@@ -6,8 +7,10 @@ class SudokuSolver:
     cols = digits
 
     def __init__(self, file):
-        cells = [row+col for row in rows for col in cols]
-        
+        self.cells = [row+col for row in rows for col in cols]
+        with f as open(file):
+            values = []
+
         
 
 class Main:
