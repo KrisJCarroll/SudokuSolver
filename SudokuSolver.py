@@ -53,19 +53,15 @@ class SudokuSolver:
                         self.cell_values[self.cells[counter]] = [int(item)]
                     counter += 1
 
-        
-        
-        
-
-        
-
-
     # helper method for generating cross product lists
     def cross_product(self, A, B):
         return [a+b for a in A for b in B]
-        
-        
-        
+
+    def solved(self):
+        for cell in self.cells:
+            if len(self.cell_values[cell]) > 1:
+                return False 
+        return True
         
     def printBoard(self):
         col = 0
@@ -113,9 +109,9 @@ class SudokuSolver:
                 self.cell_values[adjCell].remove(self.cell_values[cell][0])
                         
     
-    def checkForSingles(self, unitType):
+    def checkForSingles(self, units):
         found = False
-        for unit in unitType:
+        for unit in units:
             tmpLst = [0,0,0,0,0,0,0,0,0]
             for cell in unit:
                 if len(self.cell_values[cell]) > 1:
@@ -135,10 +131,22 @@ class SudokuSolver:
 
     #Check for single values in a block, row, or column here.
     def solve(self):
-        while True:
-            if self.checkForSingles(self.unit_list) == False:
-                break
+        stuck = False
+        tests = [True]
+        # constraint propagation goes here
+        while not stuck:
+            tests[0] = self.checkForSingles(self.unit_list)
+            
+            if True not in tests:
+                stuck = True # our tests couldn't find anymore optimizations
         
+        # check for solved status and if not solved, we need to start trying options
+        if not self.solved():
+            self.printBoard()
+            print("We need to do more.")
+        else:
+            self.printBoard()
+            print("Solved!")
 
 class Main:
     print("Hello world.")
@@ -151,4 +159,3 @@ class Main:
     solver.solve()
     #solver.checkForSingles(solver.row_units)
     #solver.checkForSingles(solver.col_units)
-    solver.printBoard()
