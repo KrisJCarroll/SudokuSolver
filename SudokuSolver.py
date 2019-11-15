@@ -178,16 +178,41 @@ class SudokuSolver:
         
     def trimPotentialValues(self, unitType): #Checks in all units for specific numbers, then removes all instances of those numbers in their shared units.
 
+    #print(max(set(numbers), key=numbers.count))
         totTrimmed = 0
         trimmedVals = False
         tList = [0,0,0,0,0,0,0,0,0]
         
         for unit in unitType:
             tList = [0,0,0,0,0,0,0,0,0]
+            cellArrs = []
             for cell in unit:
                 if len(self.cell_values[cell]) > 1:
+                    cellArrs.append(self.cell_values[cell])
                     for val in self.cell_values[cell]:
                         tList[val - 1] += 1
+            cellArrs.sort()
+            for ca1 in cellArrs:
+                arrCount = 0
+                for ca2 in cellArrs:
+                    if ca1 == ca2:
+                        arrCount += 1
+                if arrCount > 1:
+                    if len(ca1) == (arrCount): #FOUND PAIRS OR TRIPLETS
+                        cellArrayList = []
+                        for cell in unit:
+                            if self.cell_values[cell] == ca1:
+                                cellArrayList.append(cell)
+                        for nUnit in self.unit_list:
+                            if set(cellArrayList).issubset(nUnit):
+                                for num in ca1:
+                                    for mCell in nUnit:
+                                        if mCell not in cellArrayList and num in self.cell_values[mCell] and len(self.cell_values[mCell]) > 1:
+                                            self.cell_values[mCell].remove(num)
+                                            trimmedVals = True
+                        #print("FOUND THE ARR COUNT", ca1)
+            if trimmedVals == True:
+                return True
                     
             for ndx, val in enumerate(tList):
                 if val == 1: #SINGLE VALUE - replacing "find single values"
@@ -218,40 +243,22 @@ class SudokuSolver:
                                     
 
                                 
-                    
-        print (totTrimmed)
+
         return trimmedVals
         
-    # def checkForSingles(self, units):
-    #     found = False
-    #     for unit in units:
-    #         tmpLst = [0,0,0,0,0,0,0,0,0]
-    #         for cell in unit:
-    #             if len(self.cell_values[cell]) > 1:
-    #                 for val in self.cell_values[cell]:
-    #                     tmpLst[val - 1] += 1
-    #         if 1 in tmpLst:
-    #             singleNum = tmpLst.index(1) + 1
-    #             for cell in unit:
-    #                 if singleNum in self.cell_values[cell]: #FOUND
-    #                     print("FOUND")
-    #                     self.cell_values[cell] = [singleNum]
-    #                     self.removeInvalidCell(cell)
-    #                     tmpLst[tmpLst.index(1)] = 0
-    #                     found = True
-    #     return found
+
 
 class Main:
     print("Hello world.")
     #path = os.path.dirname(__file__)
     path = "C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/"
-    rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
+    rel_path = 'ExtremeDifficultyTestSudokus/17-3.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
     solver.solve()
-    easy_path = 'EasyDifficultyTestSudokus/easy-1.txt'
-    solver = SudokuSolver(os.path.join(path, easy_path))
-    solver.solve()
-    #solver.checkForSingles(solver.row_units)
-    #solver.checkForSingles(solver.col_units)
-    solver.printBoard()
+    # easy_path = 'EasyDifficultyTestSudokus/easy-1.txt'
+    # solver = SudokuSolver(os.path.join(path, easy_path))
+    # solver.solve()
+    # #solver.checkForSingles(solver.row_units)
+    # #solver.checkForSingles(solver.col_units)
+    # solver.printBoard()
