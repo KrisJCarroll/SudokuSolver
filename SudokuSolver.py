@@ -8,7 +8,8 @@ class SudokuSolver:
 
     def __init__(self, file):
         self.cells = [row+col for row in rows for col in cols]
-        with f as open(file):
+        with open(file) as f:
+            csv_reader = csv.reader(f)
             values = []
 
         
