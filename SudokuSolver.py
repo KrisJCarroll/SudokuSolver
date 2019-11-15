@@ -128,8 +128,9 @@ class SudokuSolver:
                 found = True
         return found
 
+
     #Check for single values in a block, row, or column here.
-    def solve(self):
+    def run_constraints(self):
         stuck = False
         
         # constraint propagation goes here
@@ -140,16 +141,25 @@ class SudokuSolver:
             # nothing changed on the iteration, we're stuck
             if True not in tests:
                 stuck = True # our tests couldn't find anymore optimizations
+            if len([cell for cell, values in self.cell_values.items() if len(values) == 0]):
+                return False
         
-        # check for solved status and if not solved, we need to start trying options
-        if not self.solved():
-            self.printBoard()
-            print("We need to do more.")
+        return True
+        
+    
+    def solve(self):
+        # running constraints didn't produce an invalid board state
+        if(self.run_constraints()):
+            # check for solved status and if not solved, we need to start trying options
+            if not self.solved():
+                self.printBoard()
+                print("We need to do more.")
 
-        # we beat the game, print it and brag a lot
-        else:
-            self.printBoard()
-            print("Solved! So strong.")
+            # we beat the game, print it and brag a lot
+            else:
+                self.printBoard()
+                print("Solved! So strong.")
+
 
 class Main:
     print("Hello world.")
