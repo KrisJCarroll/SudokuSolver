@@ -21,6 +21,9 @@ class SudokuSolver:
         # add the units together into a single list of lists
         self.unit_list = self.row_units + self.col_units + self.square_units
 
+        # make a dictionary mapping each cell to their appropriate units
+        self.cell_units = dict( (cell, [unit for unit in self.unit_list if cell in unit]) for cell in self.cells)
+
         # testing
         print(self.row_units)
         print()
@@ -29,6 +32,8 @@ class SudokuSolver:
         print(self.square_units)
         print()
         print(self.unit_list)
+        print()
+        print(self.cell_units['A1'])
 
         # get starting values from board state file
         self.start_values = []
