@@ -39,18 +39,6 @@ class SudokuSolver:
                         cell_member_list.append(member)
             self.cell_peers[cell] = cell_member_list
 
-        # testing
-        # print(self.row_units)
-        # print()
-        # print(self.col_units)
-        # print()
-        # print(self.square_units)
-        # print()
-        # print(self.unit_list)
-        # print()
-        # print(self.cell_units['A1'])
-        # print(self.cell_peers['A1'])
-
         # get starting values from board state file
         # Map cells to their values per teh file or initialize to a list of all possible values.
         self.cell_values = {}
@@ -65,10 +53,6 @@ class SudokuSolver:
                         self.cell_values[self.cells[counter]] = [int(item)]
                     counter += 1
 
-        
-
-        # print(self.cell_values["A1"])
-        # print(self.cell_values["A3"])
         
         
         
