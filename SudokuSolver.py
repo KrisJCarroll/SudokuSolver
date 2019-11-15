@@ -96,16 +96,19 @@ class SudokuSolver:
     
 
     def removeInvalid(self):
+        removed = False
         # Removes all values which are invalid for each undetermined cell.
         for i, cell in enumerate(self.cells):
             if len(self.cell_values[cell]) == 1:
                 for adjCell in self.cell_peers[cell]:
                     if self.cell_values[cell][0] in self.cell_values[adjCell]:
                         self.cell_values[adjCell].remove(self.cell_values[cell][0])
+                        removed = True
+        return removed
                         
                         
     def removeInvalidCell(self, cell):
-        # Removes all values which are invalid for each undetermined cell.
+        # Removes all values which are invalid for each undetermined cell
         for adjCell in self.cell_peers[cell]:
             if self.cell_values[cell][0] in self.cell_values[adjCell]:
                 self.cell_values[adjCell].remove(self.cell_values[cell][0])
@@ -138,9 +141,10 @@ class SudokuSolver:
         
         # constraint propagation goes here
         while not stuck:
-            tests = [True, True] # initialize to True for each test run
-            tests[0] = self.checkForSingles(self.unit_list)
-            tests[1] = self.trimPotentialValues(self.unit_list)
+            tests = [True, True, True] # initialize to True for each test run
+            tests[0] = self.removeInvalid()
+            tests[1] = self.checkForSingles(self.unit_list)
+            tests[2] = self.trimPotentialValues(self.unit_list)
             
             # nothing changed on the iteration, we're stuck
             if True not in tests:
@@ -222,7 +226,6 @@ class Main:
     rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
-    solver.removeInvalid()
     solver.solve()
     easy_path = 'EasyDifficultyTestSudokus/easy-1.txt'
     solver = SudokuSolver(os.path.join(path, easy_path))
