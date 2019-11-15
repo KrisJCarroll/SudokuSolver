@@ -72,13 +72,7 @@ class SudokuSolver:
         
         
         
-        # Removes all values which are invalid for each undetermined cell.
-        for i, cell in enumerate(self.cells):
-            if len(self.cell_values[cell]) == 1:
-                for adjCell in self.cell_peers[cell]:
-                    if self.cell_values[cell][0] in self.cell_values[adjCell]:
-                        self.cell_values[adjCell].remove(self.cell_values[cell][0])
-        
+
         
 
 
@@ -110,11 +104,59 @@ class SudokuSolver:
             col += 1
             row += 1
         print (rowStr)
-        
-    def checkForSingles(self):
-        #Check for single values in a block, row, or column here.
-        
-        
+    
+    
+        # self.cells = self.cross_product(self.rows, self.cols)
+        # self.row_units = [self.cross_product(r, self.cols) for r in self.rows]
+        # self.col_units = [self.cross_product(self.rows, c) for c in self.cols]
+        # self.row_chunks = ['ABC', 'DEF', 'GHI']
+        # self.col_chunks = ['123', '456', '789']
+        # self.square_units = [self.cross_product(r,c) for r in self.row_chunks for c in self.col_chunks]
+
+    def removeInvalid(self):
+        # Removes all values which are invalid for each undetermined cell.
+        for i, cell in enumerate(self.cells):
+            if len(self.cell_values[cell]) == 1:
+                for adjCell in self.cell_peers[cell]:
+                    if self.cell_values[cell][0] in self.cell_values[adjCell]:
+                        self.cell_values[adjCell].remove(self.cell_values[cell][0])
+                        
+                        
+    def removeInvalidCell(self, cell):
+        # Removes all values which are invalid for each undetermined cell.
+        for adjCell in self.cell_peers[cell]:
+            if self.cell_values[cell][0] in self.cell_values[adjCell]:
+                self.cell_values[adjCell].remove(self.cell_values[cell][0])
+                        
+    
+    def checkForSingles(self, unitType):
+        for unit in unitType:
+            tmpLst = [0,0,0,0,0,0,0,0,0]
+            for cell in unit:
+                if len(self.cell_values[cell]) > 1:
+                    for val in self.cell_values[cell]:
+                        tmpLst[val - 1] += 1
+            if 1 in tmpLst:
+                singleNum = tmpLst.index(1) + 1
+                for cell in unit:
+                    if singleNum in self.cell_values[cell]: #FOUND
+                        print("FOUND")
+                        self.cell_values[cell] = [singleNum]
+                        self.removeInvalidCell(cell)
+                        return True
+        return False
+
+    #Check for single values in a block, row, or column here.
+    def findAllSingles(self):
+        while True:
+            if self.checkForSingles(self.row_units) == False:
+                break
+        while True:
+            if self.checkForSingles(self.col_units) == False:
+                break
+        while True:
+            if self.checkForSingles(self.square_units) == False:
+                break
 
 class Main:
     print("Hello world.")
@@ -122,4 +164,9 @@ class Main:
     path = "C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/"
     rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
+    solver.printBoard()
+    solver.removeInvalid()
+    solver.findAllSingles()
+    #solver.checkForSingles(solver.row_units)
+    #solver.checkForSingles(solver.col_units)
     solver.printBoard()
