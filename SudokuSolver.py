@@ -114,6 +114,7 @@ class SudokuSolver:
                         
     
     def checkForSingles(self, unitType):
+        found = False
         for unit in unitType:
             tmpLst = [0,0,0,0,0,0,0,0,0]
             for cell in unit:
@@ -129,13 +130,13 @@ class SudokuSolver:
                             self.cell_values[cell] = [singleNum]
                             self.removeInvalidCell(cell)
                             tmpLst[tmpLst.index(1)] = 0
-                return True
-        return False
+                found = True
+        return found
 
     #Check for single values in a block, row, or column here.
     def findAllSingles(self):
         while True:
-            if self.checkForSingles(self.row_units) == False:
+            if self.checkForSingles(self.unit_list) == False:
                 break
         while True:
             if self.checkForSingles(self.col_units) == False:
