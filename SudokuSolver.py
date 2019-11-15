@@ -123,14 +123,13 @@ class SudokuSolver:
                     for val in self.cell_values[cell]:
                         tmpLst[val - 1] += 1
             if 1 in tmpLst:
-                while 1 in tmpLst:
-                    singleNum = tmpLst.index(1) + 1
-                    for cell in unit:
-                        if singleNum in self.cell_values[cell]: #FOUND
-                            print("FOUND")
-                            self.cell_values[cell] = [singleNum]
-                            self.removeInvalidCell(cell)
-                            tmpLst[tmpLst.index(1)] = 0
+                singleNum = tmpLst.index(1) + 1
+                for cell in unit:
+                    if singleNum in self.cell_values[cell]: #FOUND
+                        print("FOUND")
+                        self.cell_values[cell] = [singleNum]
+                        self.removeInvalidCell(cell)
+                        tmpLst[tmpLst.index(1)] = 0
                 found = True
         return found
 
