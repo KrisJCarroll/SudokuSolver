@@ -171,7 +171,7 @@ class SudokuSolver:
             tests = [True, True] # initialize to True for each test run
             tests[0] = self.removeInvalid()
             #tests[1] = self.checkForSingles(self.unit_list)
-            tests[1] = self.trimPotentialValues(self.unit_list)
+            tests[1] = self.ultimateTrim(self.unit_list)
             
             # nothing changed on the iteration, we're stuck
             if True not in tests:
@@ -210,7 +210,7 @@ class SudokuSolver:
             print("This puzzle is unsolvable.")
             return False
         
-    def trimPotentialValues(self, unitType): #Checks in all units for specific numbers, then removes all instances of those numbers in their shared units.
+    def ultimateTrim(self, unitType): #Checks in all units for specific numbers, then removes all instances of those numbers in their shared units.
 
     #print(max(set(numbers), key=numbers.count))
         totTrimmed = 0
