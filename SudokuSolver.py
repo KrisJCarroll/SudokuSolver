@@ -6,16 +6,16 @@ class SudokuSolver:
     
 
     def __init__(self, file):
-        digits = "123456789" # used for possible values of cells and column numbers
-        rows = "ABCDEFGHI" # used to identify each row to generate cells
-        cols = digits
+        self.digits = "123456789" # used for possible values of cells and column numbers
+        self.rows = "ABCDEFGHI" # used to identify each row to generate cells
+        self.cols = self.digits
 
-        self.cells = self.cross_product(rows, cols)
-        self.row_units = [self.cross_product(r, cols) for r in rows]
-        self.col_units = [self.cross_product(rows, c) for c in cols]
-        row_chunks = ['ABC', 'DEF', 'GHI']
-        col_chunks = ['123', '456', '789']
-        self.square_units = [self.cross_product(r,c) for r in row_chunks for c in col_chunks]
+        self.cells = self.cross_product(self.rows, self.cols)
+        self.row_units = [self.cross_product(r, self.cols) for r in self.rows]
+        self.col_units = [self.cross_product(self.rows, c) for c in self.cols]
+        self.row_chunks = ['ABC', 'DEF', 'GHI']
+        self.col_chunks = ['123', '456', '789']
+        self.square_units = [self.cross_product(r,c) for r in self.row_chunks for c in self.col_chunks]
         print(self.row_units)
         print()
         print(self.col_units)
