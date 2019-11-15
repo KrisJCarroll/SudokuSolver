@@ -138,6 +138,7 @@ class SudokuSolver:
             tests = [True]
             tests[0] = self.checkForSingles(self.unit_list)
             
+            # nothing changed on the iteration, we're stuck
             if True not in tests:
                 stuck = True # our tests couldn't find anymore optimizations
         
