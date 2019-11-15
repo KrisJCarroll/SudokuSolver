@@ -161,6 +161,9 @@ class SudokuSolver:
             else:
                 self.printBoard()
                 print("Solved! So strong.")
+        # the initial state produced an invalid puzzle after applying constraints - the puzzle cannot be solved
+        else:
+            print("This puzzle is unsolvable.")
 
 
 class Main:
