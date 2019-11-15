@@ -8,10 +8,11 @@ import os
 class SudokuSolver:
     
 
-    def __init__(self, file):
+    def __init__(self, file, cell_values = {}):
         self.digits = "123456789" # used for possible values of cells and column numbers
         self.rows = "ABCDEFGHI" # used to identify each row to generate cells
         self.cols = self.digits
+        self.file = file
 
         # generate appropriate units
         self.cells = self.cross_product(self.rows, self.cols)
@@ -40,17 +41,21 @@ class SudokuSolver:
 
         # get starting values from board state file
         # Map cells to their values per teh file or initialize to a list of all possible values.
-        self.cell_values = {}
-        counter = 0
-        with open(file) as f:
-            csv_reader = csv.reader(f)
-            for line in csv_reader:
-                for item in line:
-                    if int(item) == 0:
-                        self.cell_values[self.cells[counter]] = [int(nArr) for nArr in self.digits]
-                    else:
-                        self.cell_values[self.cells[counter]] = [int(item)]
-                    counter += 1
+        if not cell_values:
+            self.cell_values = {}
+            counter = 0
+            with open(file) as f:
+                csv_reader = csv.reader(f)
+                for line in csv_reader:
+                    for item in line:
+                        if int(item) == 0:
+                            self.cell_values[self.cells[counter]] = [int(nArr) for nArr in self.digits]
+                        else:
+                            self.cell_values[self.cells[counter]] = [int(item)]
+                        counter += 1
+        # we're copying the Sudoku state
+        else:
+            self.cell_values = cell_values
 
     # helper method for generating cross product lists
     def cross_product(self, A, B):
@@ -68,6 +73,9 @@ class SudokuSolver:
         if len([cell for cell, values in self.cell_values if len(values) == 0]):
             return True
         return False
+
+    def search(self):
+        return
         
     def printBoard(self):
         col = 0
@@ -166,6 +174,7 @@ class SudokuSolver:
             if not self.solved():
                 self.printBoard()
                 print("We need to do more.")
+                test_sudoku = SudokuSolver(self.file, self.cell_values)
 
             # we beat the game, print it and brag a lot
             else:
@@ -243,8 +252,8 @@ class SudokuSolver:
 
 class Main:
     print("Hello world.")
-    #path = os.path.dirname(__file__)
-    path = "C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/"
+    path = os.path.dirname(__file__)
+    #path = "C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/"
     rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
