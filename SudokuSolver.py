@@ -10,9 +10,10 @@ class SudokuSolver:
         rows = "ABCDEFGHI" # used to identify each row to generate cells
         cols = digits
 
-        self.cells = SudokuSolver.cross_product(rows, cols)
-        self.row_units = [SudokuSolver.cross_product(r, cols) for r in rows]
-        self.col_units = [SudokuSolver.cross_product(rows, c) for c in cols]
+        self.cells = self.cross_product(rows, cols)
+        self.row_units = [self.cross_product(r, cols) for r in rows]
+        self.col_units = [self.cross_product(rows, c) for c in cols]
+        self.square_units = []
         print(self.row_units)
         print()
         print(self.col_units)
@@ -23,7 +24,7 @@ class SudokuSolver:
                 for item in line:
                     self.start_values.append(item)
 
-    def cross_product(A, B):
+    def cross_product(self, A, B):
         return [a+b for a in A for b in B]
         
 
