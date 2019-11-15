@@ -76,6 +76,8 @@ class SudokuSolver:
         for i in self.cell_values:
             if len(self.cell_values[i]) > 1:
                 rowStr += ". "
+            elif len(self.cell_values[i]) < 1:
+                print(i, "LESS THAN 1")
             else:
                 rowStr += str(self.cell_values[i][0]) + " "
             if (col + 1) % 3 == 0 and col != 0:
@@ -90,6 +92,7 @@ class SudokuSolver:
             col += 1
             row += 1
         print (rowStr)
+        print("---------------------------------")
     
 
     def removeInvalid(self):
@@ -164,7 +167,52 @@ class SudokuSolver:
         # the initial state produced an invalid puzzle after applying constraints - the puzzle cannot be solved
         else:
             print("This puzzle is unsolvable.")
+            return False
+        
+    def trimPotentialValues(self, unitType): #Checks in all units for specific numbers, then removes all instances of those numbers in their shared units.
 
+        totTrimmed = 0
+        trimmedVals = False
+        tList = [0,0,0,0,0,0,0,0,0]
+        
+        for unit in unitType:
+            tList = [0,0,0,0,0,0,0,0,0]
+            for cell in unit:
+                if len(self.cell_values[cell]) > 1:
+                    for val in self.cell_values[cell]:
+                        tList[val - 1] += 1
+            for ndx, val in enumerate(tList):
+                if val > 1:
+                    singleNum = ndx + 1 #now find the amount of cells with the same vals
+                    uCellList = []
+                    for cell in unit:
+                        for findVall in self.cell_values[cell]:
+                            if findVall == singleNum:
+                                uCellList.append(cell)
+                    for findUnit in self.unit_list:
+                        if set(uCellList).issubset(findUnit):
+                            for modCell in findUnit:
+                                if modCell not in uCellList and singleNum in self.cell_values[modCell]:
+                                    self.cell_values[modCell].remove(singleNum)
+                                    trimmedVals = True
+                                    totTrimmed += 1
+        print (totTrimmed)
+        return trimmedVals
+        
+        #Saving the below for later....probably won't need it but who knows
+        # for cell in self.cells:
+        #     if len(self.cell_values[cell]) == 2:
+        #         print("LEN IS 2")
+        #         for adjCell in self.cell_peers[cell]:
+        #             if self.cell_values[adjCell] == self.cell_values[cell]: # two unique pairs. remove all others.
+        #                 for unit in self.cell_units[cell]: #find the same unit the two belong to.
+        #                     if adjCell in unit:
+        #                         print("IN UNIT")
+        #                         for modCell in unit:
+        #                             if modCell not in (cell, adjCell):
+        #                                 for val in self.cell_values[cell]:
+        #                                     if val in self.cell_values[modCell]:
+        #                                         self.cell_values[modCell].remove(val)
 
 class Main:
     print("Hello world.")
@@ -180,3 +228,4 @@ class Main:
     solver.solve()
     #solver.checkForSingles(solver.row_units)
     #solver.checkForSingles(solver.col_units)
+    solver.printBoard()
