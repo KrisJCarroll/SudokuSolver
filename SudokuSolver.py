@@ -121,13 +121,15 @@ class SudokuSolver:
                     for val in self.cell_values[cell]:
                         tmpLst[val - 1] += 1
             if 1 in tmpLst:
-                singleNum = tmpLst.index(1) + 1
-                for cell in unit:
-                    if singleNum in self.cell_values[cell]: #FOUND
-                        print("FOUND")
-                        self.cell_values[cell] = [singleNum]
-                        self.removeInvalidCell(cell)
-                        return True
+                while 1 in tmpLst:
+                    singleNum = tmpLst.index(1) + 1
+                    for cell in unit:
+                        if singleNum in self.cell_values[cell]: #FOUND
+                            print("FOUND")
+                            self.cell_values[cell] = [singleNum]
+                            self.removeInvalidCell(cell)
+                            tmpLst[tmpLst.index(1)] = 0
+                return True
         return False
 
     #Check for single values in a block, row, or column here.
@@ -144,8 +146,8 @@ class SudokuSolver:
 
 class Main:
     print("Hello world.")
-    #path = os.path.dirname(__file__)
-    path = "C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/"
+    path = os.path.dirname(__file__)
+    #path = "C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/"
     rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
