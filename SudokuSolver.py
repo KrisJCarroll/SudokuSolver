@@ -2,7 +2,6 @@ import sys
 sys.path.append("C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/")
 
 
-from SudokuCell import SudokuCell
 import csv
 import os
 
