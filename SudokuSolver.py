@@ -24,6 +24,17 @@ class SudokuSolver:
         # make a dictionary mapping each cell to their appropriate row, col and square members
         self.cell_units = dict( (cell, [unit for unit in self.unit_list if cell in unit]) for cell in self.cells)
 
+        # make a dictionary mapping each cell to the other cells whose value they must not share
+        self.cell_peers = {}
+        for cell in self.cells:
+            # make a set of all the members of the associated units
+            cell_member_list = []
+            for unit in self.cell_units[cell]:
+                for member in unit:
+                    if member != cell and member not in cell_member_list:
+                        cell_member_list.append(member)
+            self.cell_peers[cell] = cell_member_list
+
         # testing
         print(self.row_units)
         print()
@@ -34,6 +45,7 @@ class SudokuSolver:
         print(self.unit_list)
         print()
         print(self.cell_units['A1'])
+        print(self.cell_peers['A1'])
 
         # get starting values from board state file
         self.start_values = []
