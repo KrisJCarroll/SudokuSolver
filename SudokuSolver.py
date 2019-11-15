@@ -103,6 +103,8 @@ class SudokuSolver:
                 for adjCell in self.cell_peers[cell]:
                     if self.cell_values[cell][0] in self.cell_values[adjCell]:
                         self.cell_values[adjCell].remove(self.cell_values[cell][0])
+                        if len(self.cell_values[adjCell]) == 0:
+                            print("{c1} was just emptied to 0 due to {c2}'s value of {value}".format(c1=adjCell, c2=cell, value=self.cell_values[cell][0]))
                         removed = True
         return removed
                         
@@ -140,10 +142,10 @@ class SudokuSolver:
         
         # constraint propagation goes here
         while not stuck:
-            tests = [True, True, True] # initialize to True for each test run
+            tests = [True, True] # initialize to True for each test run
             tests[0] = self.removeInvalid()
-            tests[1] = self.checkForSingles(self.unit_list)
-            tests[2] = self.trimPotentialValues(self.unit_list)
+            #tests[1] = self.checkForSingles(self.unit_list)
+            tests[1] = self.trimPotentialValues(self.unit_list)
             
             # nothing changed on the iteration, we're stuck
             if True not in tests:
