@@ -53,7 +53,7 @@ class SudokuSolver:
                         self.cell_values[self.cells[counter]] = [int(item)]
                     counter += 1
 
-        
+
         
         
 
@@ -74,6 +74,8 @@ class SudokuSolver:
         for i in self.cell_values:
             if len(self.cell_values[i]) > 1:
                 rowStr += ". "
+            elif len(self.cell_values[i]) < 1:
+                print(i, "LESS THAN 1")
             else:
                 rowStr += str(self.cell_values[i][0]) + " "
             if (col + 1) % 3 == 0 and col != 0:
@@ -88,6 +90,7 @@ class SudokuSolver:
             col += 1
             row += 1
         print (rowStr)
+        print("---------------------------------")
     
     
         # self.cells = self.cross_product(self.rows, self.cols)
@@ -129,9 +132,57 @@ class SudokuSolver:
                         self.removeInvalidCell(cell)
                         return True
         return False
+        
+    def trimPotentialValues(self, unitType): #Checks in all units for specific numbers, then removes all instances of those numbers in their shared units.
+
+        totTrimmed = 0
+        trimmedVals = False
+        tList = [0,0,0,0,0,0,0,0,0]
+        
+        for unit in unitType:
+            tList = [0,0,0,0,0,0,0,0,0]
+            for cell in unit:
+                if len(self.cell_values[cell]) > 1:
+                    for val in self.cell_values[cell]:
+                        tList[val - 1] += 1
+            for ndx, val in enumerate(tList):
+                if val > 1:
+                    singleNum = ndx + 1 #now find the amount of cells with the same vals
+                    uCellList = []
+                    for cell in unit:
+                        for findVall in self.cell_values[cell]:
+                            if findVall == singleNum:
+                                uCellList.append(cell)
+                    for findUnit in self.unit_list:
+                        if set(uCellList).issubset(findUnit):
+                            for modCell in findUnit:
+                                if modCell not in uCellList and singleNum in self.cell_values[modCell]:
+                                    self.cell_values[modCell].remove(singleNum)
+                                    trimmedVals = True
+                                    totTrimmed += 1
+        print (totTrimmed)
+        return trimmedVals
+        
+        #Saving the below for later....probably won't need it but who knows
+        # for cell in self.cells:
+        #     if len(self.cell_values[cell]) == 2:
+        #         print("LEN IS 2")
+        #         for adjCell in self.cell_peers[cell]:
+        #             if self.cell_values[adjCell] == self.cell_values[cell]: # two unique pairs. remove all others.
+        #                 for unit in self.cell_units[cell]: #find the same unit the two belong to.
+        #                     if adjCell in unit:
+        #                         print("IN UNIT")
+        #                         for modCell in unit:
+        #                             if modCell not in (cell, adjCell):
+        #                                 for val in self.cell_values[cell]:
+        #                                     if val in self.cell_values[modCell]:
+        #                                         self.cell_values[modCell].remove(val)
+        
+                
 
     #Check for single values in a block, row, or column here.
-    def findAllSingles(self):
+    def solve(self):
+        
         while True:
             if self.checkForSingles(self.row_units) == False:
                 break
@@ -142,6 +193,23 @@ class SudokuSolver:
             if self.checkForSingles(self.square_units) == False:
                 break
 
+        self.trimPotentialValues(self.square_units)
+        self.trimPotentialValues(self.row_units)
+        self.trimPotentialValues(self.col_units)
+        self.printBoard()
+
+        while True:
+            if self.checkForSingles(self.row_units) == False:
+                break
+        while True:
+            if self.checkForSingles(self.col_units) == False:
+                break
+        while True:
+            if self.checkForSingles(self.square_units) == False:
+                break
+        
+
+
 class Main:
     print("Hello world.")
     #path = os.path.dirname(__file__)
@@ -150,7 +218,5 @@ class Main:
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
     solver.removeInvalid()
-    solver.findAllSingles()
-    #solver.checkForSingles(solver.row_units)
-    #solver.checkForSingles(solver.col_units)
+    solver.solve()
     solver.printBoard()
