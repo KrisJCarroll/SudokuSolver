@@ -43,6 +43,7 @@ class SudokuSolver:
                 for item in line:
                     self.start_values.append(item)
 
+    # helper method for generating cross product lists
     def cross_product(self, A, B):
         return [a+b for a in A for b in B]
         
