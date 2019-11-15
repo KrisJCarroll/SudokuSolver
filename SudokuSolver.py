@@ -1,3 +1,7 @@
+import sys 
+sys.path.append("C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/")
+
+
 from SudokuCell import SudokuCell
 import csv
 import os
@@ -36,34 +40,45 @@ class SudokuSolver:
             self.cell_peers[cell] = cell_member_list
 
         # testing
-        print(self.row_units)
-        print()
-        print(self.col_units)
-        print()
-        print(self.square_units)
-        print()
-        print(self.unit_list)
-        print()
-        print(self.cell_units['A1'])
-        print(self.cell_peers['A1'])
+        # print(self.row_units)
+        # print()
+        # print(self.col_units)
+        # print()
+        # print(self.square_units)
+        # print()
+        # print(self.unit_list)
+        # print()
+        # print(self.cell_units['A1'])
+        # print(self.cell_peers['A1'])
 
         # get starting values from board state file
-        self.start_values = []
+        # Map cells to their values per teh file or initialize to a list of all possible values.
+        self.cell_values = {}
+        counter = 0
         with open(file) as f:
             csv_reader = csv.reader(f)
             for line in csv_reader:
                 for item in line:
-                    self.start_values.append(item)
+                    if int(item) == 0:
+                        self.cell_values[self.cells[counter]] = [int(nArr) for nArr in self.digits]
+                    else:
+                        self.cell_values[self.cells[counter]] = [int(item)]
+                    counter += 1
+
         
-        # map cells to their values per the file or initialize to a list of all possible values
-        self.cell_values = {}
+
+        # print(self.cell_values["A1"])
+        # print(self.cell_values["A3"])
+        
+        
+        
+        # Removes all values which are invalid for each undetermined cell.
         for i, cell in enumerate(self.cells):
-            if self.start_values[i] == '0':
-                self.cell_values[cell] = [int(item) for item in self.digits]
-            else:
-                self.cell_values[cell] = [int(self.start_values[i])]
-        print(self.cell_values["A1"])
-        print(self.cell_values["A3"])
+            if len(self.cell_values[cell]) == 1:
+                for adjCell in self.cell_peers[cell]:
+                    if self.cell_values[cell][0] in self.cell_values[adjCell]:
+                        self.cell_values[adjCell].remove(self.cell_values[cell][0])
+        
         
 
 
@@ -71,9 +86,40 @@ class SudokuSolver:
     def cross_product(self, A, B):
         return [a+b for a in A for b in B]
         
+        
+        
+        
+    def printBoard(self):
+        col = 0
+        row = 0
+        rowStr = ""
+        for i in self.cell_values:
+            if len(self.cell_values[i]) > 1:
+                rowStr += ". "
+            else:
+                rowStr += str(self.cell_values[i][0]) + " "
+            if (col + 1) % 3 == 0 and col != 0:
+                rowStr += "| "
+                col = -1
+            if (row + 1) % 9 == 0 and row != 0:
+                rowStr = rowStr[:-2]
+                print(rowStr)
+                rowStr = ""
+            if (row + 1) % 27 == 0 and row != 0 and row != 80:
+                print ("---------------------")
+            col += 1
+            row += 1
+        print (rowStr)
+        
+    def checkForSingles(self):
+        #Check for single values in a block, row, or column here.
+        
+        
 
 class Main:
     print("Hello world.")
-    path = os.path.dirname(__file__)
+    #path = os.path.dirname(__file__)
+    path = "C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/"
     rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
+    solver.printBoard()
