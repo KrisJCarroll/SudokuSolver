@@ -94,20 +94,19 @@ class SudokuSolver:
         return False
 
     # searches remaining tree for solution
-    def search(self, cell_values):
-        if cell_values is False:
+    def search(self):
+        if self.cell_values is False or self.is_invalid(self.cell_values):
             return False
 
-        if self.solved_(cell_values):
-            return cell_values
+        if self.solved():
+            return True
 
-        num_vals, cell = min((len(val), cell) for cell, val in cell_values.items() if len(val) > 1)
+        num_vals, cell = min((len(val), cell) for cell, val in self.cell_values.items() if len(val) > 1)
         
-        for digit in cell_values[cell]:
-            new_values = copy.deepcopy(cell_values)
-            new_values[cell] = [digit]
+        for digit in self.cell_values[cell]:
+            self.cell_values[cell] = [digit]
 
-            return self.search(self.run_constraints(new_values))        
+            return self.search()        
 
     # general method for printing the board    
     def printBoard(self):
@@ -188,10 +187,10 @@ class SudokuSolver:
                 self.printBoard()
                 saved_vals = copy.deepcopy(self.cell_values)
                 
-                search_state = self.search(copy.deepcopy(self.cell_values))
+                search_state = self.search()
                 
-                if self.solved_(search_state):
-                    self.cell_values = search_state
+                if search_state:
+                    print("Solved!")
                     self.printBoard()
                 else:
                     print("Could not be solved.")
@@ -278,7 +277,7 @@ class Main:
     print("Hello world.")
     path = os.path.dirname(__file__)
     #path = "C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/"
-    rel_path = 'ExtremeDifficultyTestSudokus/17-2.txt'
+    rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
     solver.solve()
