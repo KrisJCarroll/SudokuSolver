@@ -8,15 +8,16 @@ class SudokuSolver:
     cols = digits
 
     def __init__(self, file):
-        self.cells = [row+col for row in SudokuSolver.rows for col in SudokuSolver.cols]
+        self.cells = SudokuSolver.cross_product(SudokuSolver.rows, SudokuSolver.cols)
         self.start_values = []
         with open(file) as f:
             csv_reader = csv.reader(f)
             for line in csv_reader:
                 for item in line:
                     self.start_values.append(item)
-            
 
+    def cross_product(A, B):
+        return [a+b for a in A for b in B]
         
 
 class Main:
