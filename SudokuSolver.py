@@ -14,7 +14,7 @@ class SudokuSolver:
             csv_reader = csv.reader(f)
             for line in csv_reader:
                 for item in line:
-                    values.append(item)
+                    self.values.append(item)
             
 
         
