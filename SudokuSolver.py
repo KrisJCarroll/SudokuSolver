@@ -13,10 +13,14 @@ class SudokuSolver:
         self.cells = self.cross_product(rows, cols)
         self.row_units = [self.cross_product(r, cols) for r in rows]
         self.col_units = [self.cross_product(rows, c) for c in cols]
-        self.square_units = []
+        row_chunks = ['ABC', 'DEF', 'GHI']
+        col_chunks = ['123', '456', '789']
+        self.square_units = [self.cross_product(r,c) for r in row_chunks for c in col_chunks]
         print(self.row_units)
         print()
         print(self.col_units)
+        print()
+        print(self.square_units)
         self.start_values = []
         with open(file) as f:
             csv_reader = csv.reader(f)
