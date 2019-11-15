@@ -54,6 +54,18 @@ class SudokuSolver:
             for line in csv_reader:
                 for item in line:
                     self.start_values.append(item)
+        
+        # map cells to their values per the file or initialize to a list of all possible values
+        self.cell_values = {}
+        for i, cell in enumerate(self.cells):
+            if self.start_values[i] == '0':
+                self.cell_values[cell] = [int(item) for item in self.digits]
+            else:
+                self.cell_values[cell] = [int(self.start_values[i])]
+        print(self.cell_values["A1"])
+        print(self.cell_values["A3"])
+        
+
 
     # helper method for generating cross product lists
     def cross_product(self, A, B):
