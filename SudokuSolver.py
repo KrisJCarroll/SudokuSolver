@@ -68,32 +68,48 @@ class SudokuSolver:
             if len(self.cell_values[cell]) > 1:
                 return False 
         return True
+
+    def solved_(self, cell_values):
+        for cell in self.cells:
+            if not cell_values:
+                return False
+            if len(cell_values[cell]) > 1:
+                return False
+        return True
     
     # checking to see if board is unsolvable (any cell has 0 possible remaining values)
-    def is_invalid(self):
+    def is_unsolvable(self):
         if len([cell for cell, values in self.cell_values if len(values) == 0]):
             return True
         return False
 
+    def is_invalid(self, cell_values):
+        for cell in self.cells:
+            if len(self.cell_values[cell]) == 0:
+                return True
+            if len(self.cell_values[cell]) == 1:
+                for adjCell in self.cell_peers[cell]:
+                    if len(self.cell_values[adjCell]) == 1 and self.cell_values[cell] == self.cell_values[adjCell]:
+                        return True
+        return False
+
+    # searches remaining tree for solution
     def search(self, cell_values):
-        self.cell_values = cell_values
-        if not self.run_constraints():
+        if cell_values is False:
             return False
 
-        if self.solved():
-            return self.cell_values
+        if self.solved_(cell_values):
+            return cell_values
 
-        num_vals, cell = min((len(val), cell) for cell, val in self.cell_values.items() if len(val) > 1)
-
-        for digit in self.cell_values[cell]:
-            new_values = copy.deepcopy(self.cell_values)
+        num_vals, cell = min((len(val), cell) for cell, val in cell_values.items() if len(val) > 1)
+        
+        for digit in cell_values[cell]:
+            new_values = copy.deepcopy(cell_values)
             new_values[cell] = [digit]
 
-            tried_new = self.search(new_values)
-            if tried_new:
-                return tried_new
+            return self.search(self.run_constraints(new_values))        
 
-        
+    # general method for printing the board    
     def printBoard(self):
         col = 0
         row = 0
@@ -141,36 +157,16 @@ class SudokuSolver:
                 self.cell_values[adjCell].remove(self.cell_values[cell][0])
                         
     
-    def checkForSingles(self, units):
-        found = False
-        for unit in units:
-            tmpLst = [0,0,0,0,0,0,0,0,0]
-            for cell in unit:
-                if len(self.cell_values[cell]) > 1:
-                    for val in self.cell_values[cell]:
-                        tmpLst[val - 1] += 1
-            if 1 in tmpLst:
-                singleNum = tmpLst.index(1) + 1
-                for cell in unit:
-                    if singleNum in self.cell_values[cell]: #FOUND
-                        print("FOUND")
-                        self.cell_values[cell] = [singleNum]
-                        self.removeInvalidCell(cell)
-                        tmpLst[tmpLst.index(1)] = 0
-                        return True 
-                        found = True
-        return found
-
 
     #Check for single values in a block, row, or column here.
-    def run_constraints(self):
+    def run_constraints(self, cell_values):
+        self.cell_values = cell_values
         stuck = False
         
         # constraint propagation goes here
         while not stuck:
             tests = [True, True] # initialize to True for each test run
             tests[0] = self.removeInvalid()
-            #tests[1] = self.checkForSingles(self.unit_list)
             tests[1] = self.ultimateTrim(self.unit_list)
             
             # nothing changed on the iteration, we're stuck
@@ -178,7 +174,7 @@ class SudokuSolver:
                 stuck = True 
 
             # if any of the cells have no possible options remaining, we have an invalid board
-            if self.is_invalid():
+            if self.is_invalid(self.cell_values):
                 return False
         
         return self.cell_values
@@ -186,16 +182,16 @@ class SudokuSolver:
     
     def solve(self):
         # running constraints didn't produce an invalid board state
-        if(self.run_constraints()):
+        if(self.run_constraints(self.cell_values)):
             # check for solved status and if not solved, we need to start trying options
             if not self.solved():
                 self.printBoard()
-                print("We need to do more.")
                 saved_vals = copy.deepcopy(self.cell_values)
                 
                 search_state = self.search(copy.deepcopy(self.cell_values))
-                self.cell_values = search_state
-                if self.solved():
+                
+                if self.solved_(search_state):
+                    self.cell_values = search_state
                     self.printBoard()
                 else:
                     print("Could not be solved.")
@@ -212,7 +208,6 @@ class SudokuSolver:
         
     def ultimateTrim(self, unitType): #Checks in all units for specific numbers, then removes all instances of those numbers in their shared units.
 
-    #print(max(set(numbers), key=numbers.count))
         totTrimmed = 0
         trimmedVals = False
         tList = [0,0,0,0,0,0,0,0,0]
@@ -244,7 +239,7 @@ class SudokuSolver:
                                         if mCell not in cellArrayList and num in self.cell_values[mCell] and len(self.cell_values[mCell]) > 1:
                                             self.cell_values[mCell].remove(num)
                                             trimmedVals = True
-                        #print("FOUND THE ARR COUNT", ca1)
+        
             if trimmedVals == True:
                 return True
                     
@@ -273,10 +268,7 @@ class SudokuSolver:
                                     self.cell_values[modCell].remove(singleNum)
                                     return True
                                     trimmedVals = True
-                                    totTrimmed += 1
-                                    
-
-                                
+                                    totTrimmed += 1     
 
         return trimmedVals
         
@@ -286,7 +278,7 @@ class Main:
     print("Hello world.")
     path = os.path.dirname(__file__)
     #path = "C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/"
-    rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
+    rel_path = 'ExtremeDifficultyTestSudokus/17-2.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
     solver.solve()
