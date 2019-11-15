@@ -3,12 +3,19 @@ import csv
 import os
 
 class SudokuSolver:
-    digits = "123456789" # used for possible values of cells and column numbers
-    rows = "ABCDEFGHI" # used to identify each row to generate cells
-    cols = digits
+    
 
     def __init__(self, file):
-        self.cells = SudokuSolver.cross_product(SudokuSolver.rows, SudokuSolver.cols)
+        digits = "123456789" # used for possible values of cells and column numbers
+        rows = "ABCDEFGHI" # used to identify each row to generate cells
+        cols = digits
+
+        self.cells = SudokuSolver.cross_product(rows, cols)
+        self.row_units = [SudokuSolver.cross_product(r, cols) for r in rows]
+        self.col_units = [SudokuSolver.cross_product(rows, c) for c in cols]
+        print(self.row_units)
+        print()
+        print(self.col_units)
         self.start_values = []
         with open(file) as f:
             csv_reader = csv.reader(f)
