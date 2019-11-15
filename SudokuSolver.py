@@ -10,17 +10,27 @@ class SudokuSolver:
         self.rows = "ABCDEFGHI" # used to identify each row to generate cells
         self.cols = self.digits
 
+        # generate appropriate units
         self.cells = self.cross_product(self.rows, self.cols)
         self.row_units = [self.cross_product(r, self.cols) for r in self.rows]
         self.col_units = [self.cross_product(self.rows, c) for c in self.cols]
         self.row_chunks = ['ABC', 'DEF', 'GHI']
         self.col_chunks = ['123', '456', '789']
         self.square_units = [self.cross_product(r,c) for r in self.row_chunks for c in self.col_chunks]
+
+        # add the units together into a single list of lists
+        self.unit_list = self.row_units + self.col_units + self.square_units
+
+        # testing
         print(self.row_units)
         print()
         print(self.col_units)
         print()
         print(self.square_units)
+        print()
+        print(self.unit_list)
+
+        # get starting values from board state file
         self.start_values = []
         with open(file) as f:
             csv_reader = csv.reader(f)
