@@ -4,6 +4,7 @@ sys.path.append("C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/
 
 import csv
 import os
+import copy
 
 class SudokuSolver:
     
@@ -74,8 +75,24 @@ class SudokuSolver:
             return True
         return False
 
-    def search(self):
-        return
+    def search(self, cell_values):
+        self.cell_values = cell_values
+        if not self.run_constraints():
+            return False
+
+        if self.solved():
+            return self.cell_values
+
+        num_vals, cell = min((len(val), cell) for cell, val in self.cell_values.items() if len(val) > 1)
+
+        for digit in self.cell_values[cell]:
+            new_values = copy.deepcopy(self.cell_values)
+            new_values[cell] = [digit]
+
+            tried_new = self.search(new_values)
+            if tried_new:
+                return tried_new
+
         
     def printBoard(self):
         col = 0
@@ -164,7 +181,7 @@ class SudokuSolver:
             if self.is_invalid():
                 return False
         
-        return True
+        return self.cell_values
         
     
     def solve(self):
@@ -174,7 +191,15 @@ class SudokuSolver:
             if not self.solved():
                 self.printBoard()
                 print("We need to do more.")
-                test_sudoku = SudokuSolver(self.file, self.cell_values)
+                saved_vals = copy.deepcopy(self.cell_values)
+                
+                search_state = self.search(copy.deepcopy(self.cell_values))
+                self.cell_values = search_state
+                if self.solved():
+                    self.printBoard()
+                else:
+                    print("Could not be solved.")
+
 
             # we beat the game, print it and brag a lot
             else:
