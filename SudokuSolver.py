@@ -134,16 +134,11 @@ class SudokuSolver:
         return found
 
     #Check for single values in a block, row, or column here.
-    def findAllSingles(self):
+    def solve(self):
         while True:
             if self.checkForSingles(self.unit_list) == False:
                 break
-        while True:
-            if self.checkForSingles(self.col_units) == False:
-                break
-        while True:
-            if self.checkForSingles(self.square_units) == False:
-                break
+        
 
 class Main:
     print("Hello world.")
@@ -153,7 +148,7 @@ class Main:
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
     solver.removeInvalid()
-    solver.findAllSingles()
+    solver.solve()
     #solver.checkForSingles(solver.row_units)
     #solver.checkForSingles(solver.col_units)
     solver.printBoard()
