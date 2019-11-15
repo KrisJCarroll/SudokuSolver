@@ -132,9 +132,10 @@ class SudokuSolver:
     #Check for single values in a block, row, or column here.
     def solve(self):
         stuck = False
-        tests = [True]
+        
         # constraint propagation goes here
         while not stuck:
+            tests = [True]
             tests[0] = self.checkForSingles(self.unit_list)
             
             if True not in tests:
@@ -144,9 +145,11 @@ class SudokuSolver:
         if not self.solved():
             self.printBoard()
             print("We need to do more.")
+
+        # we beat the game, print it and brag a lot
         else:
             self.printBoard()
-            print("Solved!")
+            print("Solved! So strong.")
 
 class Main:
     print("Hello world.")
