@@ -61,6 +61,11 @@ class SudokuSolver:
             if len(self.cell_values[cell]) > 1:
                 return False 
         return True
+    
+    def is_invalid(self):
+        if len([cell for cell, values in self.cell_values if len(values) == 0]):
+            return True
+        return False
         
     def printBoard(self):
         col = 0
@@ -141,7 +146,9 @@ class SudokuSolver:
             # nothing changed on the iteration, we're stuck
             if True not in tests:
                 stuck = True # our tests couldn't find anymore optimizations
-            if len([cell for cell, values in self.cell_values.items() if len(values) == 0]):
+
+            # if any of the cells have no possible options remaining, we have an invalid board
+            if self.is_invalid():
                 return False
         
         return True
