@@ -1,5 +1,5 @@
 import sys 
-sys.path.append("C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/")
+sys.path.append("C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/")
 
 
 import csv
@@ -101,7 +101,7 @@ class SudokuSolver:
         for i, cell in enumerate(self.cells):
             if len(self.cell_values[cell]) == 1:
                 for adjCell in self.cell_peers[cell]:
-                    if self.cell_values[cell][0] in self.cell_values[adjCell]:
+                    if self.cell_values[cell][0] in self.cell_values[adjCell] and len(self.cell_values[adjCell]) > 1:
                         self.cell_values[adjCell].remove(self.cell_values[cell][0])
                         if len(self.cell_values[adjCell]) == 0:
                             print("{c1} was just emptied to 0 due to {c2}'s value of {value}".format(c1=adjCell, c2=cell, value=self.cell_values[cell][0]))
@@ -112,7 +112,7 @@ class SudokuSolver:
     def removeInvalidCell(self, cell):
         # Removes all values which are invalid for each undetermined cell
         for adjCell in self.cell_peers[cell]:
-            if self.cell_values[cell][0] in self.cell_values[adjCell]:
+            if self.cell_values[cell][0] in self.cell_values[adjCell] and len(self.cell_values[adjCell]) > 1:
                 self.cell_values[adjCell].remove(self.cell_values[cell][0])
                         
     
@@ -132,7 +132,8 @@ class SudokuSolver:
                         self.cell_values[cell] = [singleNum]
                         self.removeInvalidCell(cell)
                         tmpLst[tmpLst.index(1)] = 0
-                found = True
+                        return True 
+                        found = True
         return found
 
 
@@ -187,8 +188,19 @@ class SudokuSolver:
                 if len(self.cell_values[cell]) > 1:
                     for val in self.cell_values[cell]:
                         tList[val - 1] += 1
+                    
             for ndx, val in enumerate(tList):
-                if val > 1:
+                if val == 1: #SINGLE VALUE - replacing "find single values"
+                    singleNum = ndx + 1
+                    for cell in unit:
+                        for findVall in self.cell_values[cell]:
+                            if findVall == singleNum: #congratulations you found the single number.
+                                self.cell_values[cell] = [singleNum]
+                                self.removeInvalidCell(cell)
+                                return True
+                                trimmedVals = True
+    
+                elif val > 1:
                     singleNum = ndx + 1 #now find the amount of cells with the same vals
                     uCellList = []
                     for cell in unit:
@@ -200,30 +212,39 @@ class SudokuSolver:
                             for modCell in findUnit:
                                 if modCell not in uCellList and singleNum in self.cell_values[modCell]:
                                     self.cell_values[modCell].remove(singleNum)
+                                    return True
                                     trimmedVals = True
                                     totTrimmed += 1
+                                    
+
+                                
+                    
         print (totTrimmed)
         return trimmedVals
         
-        #Saving the below for later....probably won't need it but who knows
-        # for cell in self.cells:
-        #     if len(self.cell_values[cell]) == 2:
-        #         print("LEN IS 2")
-        #         for adjCell in self.cell_peers[cell]:
-        #             if self.cell_values[adjCell] == self.cell_values[cell]: # two unique pairs. remove all others.
-        #                 for unit in self.cell_units[cell]: #find the same unit the two belong to.
-        #                     if adjCell in unit:
-        #                         print("IN UNIT")
-        #                         for modCell in unit:
-        #                             if modCell not in (cell, adjCell):
-        #                                 for val in self.cell_values[cell]:
-        #                                     if val in self.cell_values[modCell]:
-        #                                         self.cell_values[modCell].remove(val)
+    # def checkForSingles(self, units):
+    #     found = False
+    #     for unit in units:
+    #         tmpLst = [0,0,0,0,0,0,0,0,0]
+    #         for cell in unit:
+    #             if len(self.cell_values[cell]) > 1:
+    #                 for val in self.cell_values[cell]:
+    #                     tmpLst[val - 1] += 1
+    #         if 1 in tmpLst:
+    #             singleNum = tmpLst.index(1) + 1
+    #             for cell in unit:
+    #                 if singleNum in self.cell_values[cell]: #FOUND
+    #                     print("FOUND")
+    #                     self.cell_values[cell] = [singleNum]
+    #                     self.removeInvalidCell(cell)
+    #                     tmpLst[tmpLst.index(1)] = 0
+    #                     found = True
+    #     return found
 
 class Main:
     print("Hello world.")
-    path = os.path.dirname(__file__)
-    #path = "C:/Users/andre/Documents/School/2019.fall/AI/A4/SudokuSolver/"
+    #path = os.path.dirname(__file__)
+    path = "C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/"
     rel_path = 'ExtremeDifficultyTestSudokus/17-1.txt'
     solver = SudokuSolver(os.path.join(path, rel_path))
     solver.printBoard()
