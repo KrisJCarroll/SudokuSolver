@@ -140,7 +140,7 @@ class SudokuSolver:
             
             # nothing changed on the iteration, we're stuck
             if True not in tests:
-                stuck = True # our tests couldn't find anymore optimizations
+                stuck = True 
 
             # if any of the cells have no possible options remaining, we have an invalid board
             if self.is_invalid():
