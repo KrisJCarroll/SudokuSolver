@@ -89,13 +89,6 @@ class SudokuSolver:
             row += 1
         print (rowStr)
     
-    
-        # self.cells = self.cross_product(self.rows, self.cols)
-        # self.row_units = [self.cross_product(r, self.cols) for r in self.rows]
-        # self.col_units = [self.cross_product(self.rows, c) for c in self.cols]
-        # self.row_chunks = ['ABC', 'DEF', 'GHI']
-        # self.col_chunks = ['123', '456', '789']
-        # self.square_units = [self.cross_product(r,c) for r in self.row_chunks for c in self.col_chunks]
 
     def removeInvalid(self):
         # Removes all values which are invalid for each undetermined cell.
@@ -140,7 +133,7 @@ class SudokuSolver:
         
         # constraint propagation goes here
         while not stuck:
-            tests = [True]
+            tests = [True] # initialize to True for each test run
             tests[0] = self.checkForSingles(self.unit_list)
             
             # nothing changed on the iteration, we're stuck
