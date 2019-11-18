@@ -1,7 +1,6 @@
 import sys 
 sys.path.append("C:/Users/andre/Documents/School/2019.fall/AI/A4_4/SudokuSolver/")
 
-
 import csv
 import os
 import copy
@@ -94,19 +93,20 @@ class SudokuSolver:
         return False
 
     # searches remaining tree for solution
-    def search(self):
-        if self.cell_values is False or self.is_invalid(self.cell_values):
+    def search(self, cell_values):
+        if cell_values is False or self.is_invalid(cell_values):
             return False
 
         if self.solved():
             return True
 
         num_vals, cell = min((len(val), cell) for cell, val in self.cell_values.items() if len(val) > 1)
-        
+        new_values = copy.deepcopy(self.cell_values)
         for digit in self.cell_values[cell]:
-            self.cell_values[cell] = [digit]
+            
+            new_values[cell] = [digit]
 
-            return self.search()        
+            return self.search(new_values)        
 
     # general method for printing the board    
     def printBoard(self):
@@ -187,7 +187,7 @@ class SudokuSolver:
                 self.printBoard()
                 saved_vals = copy.deepcopy(self.cell_values)
                 
-                search_state = self.search()
+                search_state = self.search(self.cell_values)
                 
                 if search_state:
                     print("Solved!")
